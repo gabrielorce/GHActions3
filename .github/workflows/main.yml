@@ -34,6 +34,7 @@ jobs:
 
       - name: Run Containers
         run: |
+          docker images
           docker run -d --name builder-latest -v ${{ github.workspace }}:workspace builder-cli
           docker run -d --name sonar-latest -v ${{ github.workspace }}:workspace  sonar-cli
       - name: Run Commands Inside Container 1

@@ -1,17 +1,17 @@
 # Use official Node.js image as the base image
-FROM node:14
+FROM node:latest
 
 # Set the working directory in the container
 WORKDIR /app
 
 # Copy package.json and package-lock.json to the working directory
-COPY ./my-npm-project/package*.json ./app
+COPY ./my-npm-project/* .
 
 # Install dependencies
 RUN npm install
 
 # Copy the rest of the application files
-COPY . .
+COPY  . ./
 
 # Expose the port the app will run on
 EXPOSE 3000

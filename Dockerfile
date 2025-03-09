@@ -5,7 +5,7 @@ FROM node:14
 WORKDIR /app
 
 # Copy package.json and package-lock.json to the working directory
-COPY my-npm-project/package*.json ./
+COPY ./my-npm-project/package*.json ./app
 
 # Install dependencies
 RUN npm install

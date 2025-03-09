@@ -34,9 +34,8 @@ jobs:
 
       - name: Run Containers
         run: |
-          docker run -d --name builder-cli -v ${{ github.workspace }}/workspace ${{ env.ECR_REPOSITORY }}/wwex:builder-cli
-          docker run -d --name sonar-cli -v ${{ github.workspace }}/workspace ${{ env.ECR_REPOSITORY }}/wwex:sonar-cli
-
+          docker run -d --name builder-cli -v ${{ github.workspace }}:workspace
+          docker run -d --name sonar-cli -v ${{ github.workspace }}:workspace 
       - name: Run Commands Inside Container 1
         run: |
           docker exec builder-cli bash -c "echo Running inside builder-cli && ls /workspace"
@@ -48,4 +47,4 @@ jobs:
       - name: Run Commands Outside Containers
         run: |
           echo "This is running outside any container"
-          ls ${{ github.workspace }}/workspace
+          ls ${{ github.workspace }}

@@ -31,8 +31,8 @@ jobs:
         run: |
           docker pull ${{ env.ECR_REGISTRY }}/wwex:builder-latest 
           docker pull ${{ env.ECR_REGISTRY }}/wwex:sonar-latest
-          docker tag ${{ env.ECR_REPOSITORY }}/wwex:builder-latest builder-cli
-          docker tag ${{ env.ECR_REPOSITORY }}/wwex:sonar-latest sonar-cli
+          docker tag ${{ env.ECR_REGISTRY }}/wwex:builder-latest builder-cli
+          docker tag ${{ env.ECR_REGISTRY }}/wwex:sonar-latest sonar-cli
           
       - name: Run Containers
         run: |

@@ -1,29 +1,13 @@
-name: JenkinsFile_versioning_sonar_intro
+name: Run Commands in Multiple Containers
 
 on:
-#  push:
-#    branches:
-#      - main
-  workflow_dispatch:
-  
-env:
-  AWS_REGION: us-east-1
-  AWS_ACCOUNT: 661604053278
-#  ECR_REGISTRY: <AWS_ACCOUNT>.dkr.ecr.us-east-1.amazonaws.com
-  MAVEN_CACHE_DIR: /maven-cache/.m2
+  push:
+    branches:
+      - main
 
 jobs:
-  build:
+  run-commands:
     runs-on: ubuntu-latest
-
-    
-    services:
-      container1:
-        image: ${{ secrets.ECR_REPOSITORY }}/builder-cli:latest
-        options: --user root -v /github/workspace:/workspace
-      container2:
-        image: ${{ secrets.ECR_REPOSITORY }}/sonar-cli:latest
-        options: --user root -v /github/workspace:/workspace
 
     steps:
       - name: Checkout Repository
@@ -40,20 +24,25 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
 
-      - name: Pull Containers (for local runner testing)
+      - name: Pull Containers
         run: |
-          docker pull ${{ secrets.ECR_REPOSITORY }}/container1:latest
-          docker pull ${{ secrets.ECR_REPOSITORY }}/container2:latest
+          docker pull ${{ secrets.ECR_REPOSITORY }}/builder-cli:latest
+          docker pull ${{ secrets.ECR_REPOSITORY }}/sonar-cli:latest
+
+      - name: Run Containers
+        run: |
+          docker run -d --name builder-cli -v ${{ github.workspace }}:/workspace ${{ secrets.ECR_REPOSITORY }}/builder-cli:latest
+          docker run -d --name sonar-cli -v ${{ github.workspace }}:/workspace ${{ secrets.ECR_REPOSITORY }}/sonar-cli:latest
 
       - name: Run Commands Inside Container 1
         run: |
-          docker exec container1 bash -c "echo Running inside container1 && ls /workspace"
+          docker exec builder-cli bash -c "echo Running inside builder-cli && ls /workspace"
 
       - name: Run Commands Inside Container 2
         run: |
-          docker exec container2 bash -c "echo Running inside container2 && ls /workspace"
+          docker exec sonar-cli bash -c "echo Running inside sonar-cli && ls /workspace"
 
       - name: Run Commands Outside Containers
         run: |
           echo "This is running outside any container"
-          ls /github/workspace
+          ls ${{ github.workspace }}

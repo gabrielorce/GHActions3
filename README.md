@@ -33,3 +33,13 @@ This is a simple Node.js project using npm and Docker.
 ## Docker Setup
 
 For running this project in Docker, follow the instructions below.
+
+
+ ```bash
+docker build -t my-npm-project .
+```
+
+Run the container:
+ ```bash
+docker run -p 3000:3000 my-npm-project
+```

@@ -35,8 +35,8 @@ jobs:
       - name: Run Containers
         run: |
           docker images
-          docker run -d --name builder-cli -v ${{ github.workspace }}:workspace builder-latest
-          docker run -d --name sonar-cli -v ${{ github.workspace }}:workspace  sonar-latest
+          docker run -d --name builder-cli -v ${{ github.workspace }}:workspace wwex:builder-latest
+          docker run -d --name sonar-cli -v ${{ github.workspace }}:workspace  wwex:sonar-latest
       - name: Run Commands Inside Container 1
         run: |
           docker exec builder-cli bash -c "echo Running inside builder-cli && ls /workspace"

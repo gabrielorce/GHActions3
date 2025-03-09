@@ -27,16 +27,18 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
 
-      - name: Pull Containers
+      - name: Pull and tag Containers
         run: |
           docker pull ${{ env.ECR_REGISTRY }}/wwex:builder-latest 
           docker pull ${{ env.ECR_REGISTRY }}/wwex:sonar-latest
-
+          docker tag ${{ env.ECR_REPOSITORY }}/wwex:builder-latest builder-cli
+          docker tag ${{ env.ECR_REPOSITORY }}/wwex:sonar-latest sonar-cli
+          
       - name: Run Containers
         run: |
           docker images
-          docker run -d --name builder-cli -v ${{ github.workspace }}:workspace wwex:builder-latest
-          docker run -d --name sonar-cli -v ${{ github.workspace }}:workspace  wwex:sonar-latest
+          docker run -d --name builder-cli -v ${{ github.workspace }}:workspace
+          docker run -d --name sonar-cli -v ${{ github.workspace }}:workspace
       - name: Run Commands Inside Container 1
         run: |
           docker exec builder-cli bash -c "echo Running inside builder-cli && ls /workspace"

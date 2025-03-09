@@ -1,9 +1,12 @@
 name: Run Commands in Multiple Containers
 
 on:
-  push:
-    branches:
-      - main
+  workflow_dispatch:
+  
+env:
+  AWS_REGION: us-east-1
+  MAVEN_CACHE_DIR: /maven-cache/.m2
+
 
 jobs:
   run-commands:

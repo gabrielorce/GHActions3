@@ -1,0 +1,59 @@
+name: JenkinsFile_versioning_sonar_intro
+
+on:
+#  push:
+#    branches:
+#      - main
+  workflow_dispatch:
+  
+env:
+  AWS_REGION: us-east-1
+  AWS_ACCOUNT: 661604053278
+#  ECR_REGISTRY: <AWS_ACCOUNT>.dkr.ecr.us-east-1.amazonaws.com
+  MAVEN_CACHE_DIR: /maven-cache/.m2
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    
+    services:
+      container1:
+        image: ${{ secrets.ECR_REPOSITORY }}/builder-cli:latest
+        options: --user root -v /github/workspace:/workspace
+      container2:
+        image: ${{ secrets.ECR_REPOSITORY }}/sonar-cli:latest
+        options: --user root -v /github/workspace:/workspace
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Pull Containers (for local runner testing)
+        run: |
+          docker pull ${{ secrets.ECR_REPOSITORY }}/container1:latest
+          docker pull ${{ secrets.ECR_REPOSITORY }}/container2:latest
+
+      - name: Run Commands Inside Container 1
+        run: |
+          docker exec container1 bash -c "echo Running inside container1 && ls /workspace"
+
+      - name: Run Commands Inside Container 2
+        run: |
+          docker exec container2 bash -c "echo Running inside container2 && ls /workspace"
+
+      - name: Run Commands Outside Containers
+        run: |
+          echo "This is running outside any container"
+          ls /github/workspace

@@ -34,8 +34,8 @@ jobs:
 
       - name: Run Containers
         run: |
-          docker run -d --name builder-cli -v ${{ github.workspace }}:/workspace ${{ secrets.ECR_REPOSITORY }}/builder-cli:latest
-          docker run -d --name sonar-cli -v ${{ github.workspace }}:/workspace ${{ secrets.ECR_REPOSITORY }}/sonar-cli:latest
+          docker run -d --name builder-cli -v ${{ github.workspace }}:/workspace ${{ env.ECR_REPOSITORY }}/wwex:builder-cli
+          docker run -d --name sonar-cli -v ${{ github.workspace }}:/workspace ${{ env.ECR_REPOSITORY }}/wwex:sonar-cli
 
       - name: Run Commands Inside Container 1
         run: |

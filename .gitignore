@@ -39,6 +39,14 @@ yarn.lock
 
 # Docker-related files
 .docker/
+docker-compose.override.yml
+
+# Docker image and container files (generated during build)
+*.tar
+*.tgz
+
+# Docker volumes (if using Docker volumes locally)
+docker-data/
 
 # Test coverage
 coverage/

@@ -6,7 +6,7 @@ on:
 env:
   AWS_REGION: us-east-1
   MAVEN_CACHE_DIR: /maven-cache/.m2
-
+  ECR_REGISTRY: 661604053278.dkr.ecr.us-east-1.amazonaws.com/wwex
 
 jobs:
   run-commands:
@@ -29,8 +29,8 @@ jobs:
 
       - name: Pull Containers
         run: |
-          docker pull ${{ secrets.ECR_REPOSITORY }}/builder-cli:latest
-          docker pull ${{ secrets.ECR_REPOSITORY }}/sonar-cli:latest
+          docker pull ${{ env.ECR_REGISTRY }}/builder-cli:latest
+          docker pull ${{ env.ECR_REGISTRY }}/sonar-cli:latest
 
       - name: Run Containers
         run: |

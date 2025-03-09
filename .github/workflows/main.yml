@@ -29,13 +29,13 @@ jobs:
 
       - name: Pull Containers
         run: |
-          docker pull ${{ env.ECR_REGISTRY }}/wwex:builder-cli
-          docker pull ${{ env.ECR_REGISTRY }}/wwex:sonar-cli
+          docker pull ${{ env.ECR_REGISTRY }}/wwex:builder-latest 
+          docker pull ${{ env.ECR_REGISTRY }}/wwex:sonar-latest
 
       - name: Run Containers
         run: |
-          docker run -d --name builder-cli -v ${{ github.workspace }}:workspace builder-cli
-          docker run -d --name sonar-cli -v ${{ github.workspace }}:workspace  sonar-cli
+          docker run -d --name builder-cli -v ${{ github.workspace }}:workspace builder-latest
+          docker run -d --name sonar-cli -v ${{ github.workspace }}:workspace  sonar-latest
       - name: Run Commands Inside Container 1
         run: |
           docker exec builder-cli bash -c "echo Running inside builder-cli && ls /workspace"

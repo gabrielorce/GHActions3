@@ -1,4 +1,4 @@
-name: show info
+name: show_info
 
 on:
   workflow_dispatch:

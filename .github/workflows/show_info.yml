@@ -6,7 +6,8 @@ on:
       environment:
         type: environment
         description: Select the environment
-      # Then available as github.event.inputs.environment
+      # Checks existing variables from those existing in settings
+      # The selected value is available in this var: github.event.inputs.environment
 
 env:
   BRANCH: ${{ github.ref_name }}

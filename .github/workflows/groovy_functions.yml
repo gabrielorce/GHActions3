@@ -1,0 +1,22 @@
+name: Use Groovy Functions in GitHub Actions
+
+on:
+  workflow_dispatch:
+
+jobs:
+  execute-groovy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Install Groovy
+        run: sudo apt update && sudo apt install -y groovy
+
+      - name: Run Groovy Function and Capture Output
+        id: check_file
+        run: echo "NEW_VERSION=$(groovy scripts/incrementVersionNumber.groovy 33.2-1.1)" >> $GITHUB_ENV
+
+      - name: Use Groovy Function Output in Another Step
+        run: |
+          echo "OLD VERSION is 33.2-1.1    -    NEW VERSION is $GITHUB_ENV"

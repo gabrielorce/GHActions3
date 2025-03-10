@@ -15,8 +15,8 @@ jobs:
 
       - name: Run Groovy Function and Capture Output
         id: check_file
-        run: echo "NEW_VERSION=$(groovy scripts/incrementVersionNumber.groovy 33.2-1.1)" >> $GITHUB_ENV
+        run: echo "NEW_VERSION=$(groovy groovy-scripts/incrementVersionNumber.groovy 33.2-1.1)" >> $GITHUB_ENV
 
       - name: Use Groovy Function Output in Another Step
         run: |
-          echo "OLD VERSION is 33.2-1.1    -    NEW VERSION is $GITHUB_ENV"
+          echo "OLD VERSION is 33.2-1.1    -    NEW VERSION is $NEW_VERSION"

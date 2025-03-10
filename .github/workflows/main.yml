@@ -41,13 +41,14 @@ jobs:
           docker run -d -t --name sonar-cli -v ${{ github.workspace }}:/workspace sonar-cli
       - name: Run Commands Inside Container 1
         run: |
-          docker exec builder-cli bash -c "echo Running inside builder-cli && ls /workspace"
+          docker exec builder-cli bash -c "echo Running inside builder-cli && ls /workspace && pwd"
 
       - name: Run Commands Inside Container 2
         run: |
-          docker exec sonar-cli bash -c "echo Running inside sonar-cli && ls /workspace"
+          docker exec sonar-cli bash -c "echo Running inside sonar-cli && ls /workspace && pwd"
 
       - name: Run Commands Outside Containers
         run: |
           echo "This is running outside any container"
+          pwd
           ls ${{ github.workspace }}

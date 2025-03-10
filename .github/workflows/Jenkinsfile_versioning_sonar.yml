@@ -1,0 +1,68 @@
+name: Jenkinsfile_versioning_sonar
+
+on:
+  workflow_dispatch:
+  
+env:
+  AWS_REGION: us-east-1
+  MAVEN_CACHE_DIR: /maven-cache/.m2
+  ECR_REGISTRY: 661604053278.dkr.ecr.us-east-1.amazonaws.com
+  EMAIL_RECIPIENTS: "20fb4043.wwex.support@amer.teams.ms"
+
+jobs:
+  run-commands:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Log in to JFrog Artifactory
+        run: |
+          echo "${{ secrets.JFROG_TOKEN }}" | docker login mycompany.jfrog.io -u gorce_WWEXTest-BROHW@github --password-stdin
+
+      - name: Pull and tag Containers
+        run: |
+          docker pull wwex.jfrog.io/docker/wwex/ui/buildimage:latest
+          docker pull wwex.jfrog.io/docker/sonarsource/sonar-scanner-cli
+          docker tag wwex.jfrog.io/docker/wwex/ui/buildimage:latest wwex-ui-image
+          docker tag wwex.jfrog.io/docker/sonarsource/sonar-scanner-cli sonarcli-image
+          
+      - name: Run Containers
+        run: |
+          docker images
+          docker run -d -t --name wwex-ui-image -v ${{ github.workspace }}:/workspace wwex-ui-image
+          docker run -d -t --name sonarcli-image -v ${{ github.workspace }}:/workspace sonarcli-image
+          
+      - name: Run Commands Inside Container 1
+        run: |
+          docker exec builder-cli bash -c 'chmod +x ./build.sh && ./build.sh $token "test-coverage"'
+
+      - name: Run Commands Inside Container 2
+        run: |
+          docker exec sonar-cli bash -c  '''
+                    sonar-scanner \
+                    -Dsonar.organization=wwexdevelopment \
+                    -Dsonar.projectKey=wwexdevelopment_ui-front-end \
+                    -Dsonar.sources=./src/app \
+                    -Dsonar.exclusions=**/node_modules/**,**/*.html,**/*.css,**/*.scss,**/*.spec.ts,**/*test.ts,**/*.js \
+                    -Dsonar.cpd.exclusions=**/node_modules/**,**/*.spec.ts,**/*test.ts,**/*.js \
+                    -Dsonar.coverage.exclusions=**/*.js,src/main.ts,**/*environment*.ts,**/*module.ts,**/*constants.ts,**/*.spec.ts,**/models/**,**/modules/ship-redesign/** \
+                    -Dsonar.typescript.lcov.reportPaths=./coverage/lcov.info \
+                    -Dsonar.host.url=https://sonarcloud.io
+                   '''
+      - name: Run Commands Outside Containers
+        run: |
+          echo "This is running outside any container"
+          ls ${{ github.workspace }}

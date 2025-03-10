@@ -1,4 +1,4 @@
-name: Show Info
+name: Show Information GH vars
 
 on:
   workflow_dispatch:

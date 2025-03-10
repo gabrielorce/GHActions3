@@ -2,23 +2,23 @@ name: Show Information GH vars
 
 on:
   workflow_dispatch:
-
- 
-jobs:
-  run-commands:
-    runs-on: ubuntu-latest
     inputs:
       environment:
         type: environment
         description: Select the environment
       # Then available as github.event.inputs.environment
 
-    env:
-        BRANCH = "${{ github.ref_name }}"
-        ENVIRONMENT =  "${{ github.event.inputs.environment }}"
-        ENVIRONMENT_WWEX = "${ENVIRONMENT}-ss"
-        ENVIRONMENT_UNI = "${ENVIRONMENT}-uni"
-        EMAIL_RECIPIENTS = "20fb4043.wwex.support@amer.teams.ms"
+env:
+  BRANCH = "${{ github.ref_name }}"
+  ENVIRONMENT =  "${{ github.event.inputs.environment }}"
+  ENVIRONMENT_WWEX = "${ENVIRONMENT}-ss"
+  ENVIRONMENT_UNI = "${ENVIRONMENT}-uni"
+  EMAIL_RECIPIENTS = "20fb4043.wwex.support@amer.teams.ms"
+        
+jobs:
+  run-commands:
+    runs-on: ubuntu-latest
+
 
     steps:
       - name: Checkout Repository

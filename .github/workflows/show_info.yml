@@ -11,16 +11,26 @@ on:
 env:
   BRANCH: ${{ github.ref_name }}
   ENVIRONMENT:  ${{ github.event.inputs.environment }}
-  ENVIRONMENT_WWEX: ${ENVIRONMENT}-ss
-  ENVIRONMENT_UNI: $ENVIRONMENT-uni
+#  ENVIRONMENT_WWEX: ${ENVIRONMENT}-ss
+#  ENVIRONMENT_UNI: $ENVIRONMENT-uni
   EMAIL_RECIPIENTS: "20fb4043.wwex.support@amer.teams.ms"
         
 jobs:
   run-commands:
     runs-on: ubuntu-latest
-
-
     steps:
+
+      - name: Concatenate environment variables
+        run: |
+          echo "ENVIRONMENT_WWEX=${ENVIRONMENT}-ss" >> $GITHUB_ENV
+          echo "ENVIRONMENT_UNI=${ENVIRONMENT}-uni" >> $GITHUB_ENV
+
+      - name: Print concatenated variable
+        run: |
+          echo "$ENVIRONMENT_WWEX"
+          echo "$ENVIRONMENT_UNI"
+
+        
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:

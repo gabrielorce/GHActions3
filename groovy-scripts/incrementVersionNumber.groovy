@@ -15,6 +15,6 @@ def call(String version) {
 
 
 // Read command-line arguments and execute
-def providedData = [filePath: args[1]]
+def providedData = [filePath: args[0]]
 def result = call(providedData)
 println result  // This output will be captured by GitHub Actions

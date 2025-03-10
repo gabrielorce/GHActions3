@@ -11,8 +11,8 @@ on:
 env:
   BRANCH = "${{ github.ref_name }}"
   ENVIRONMENT =  "${{ github.event.inputs.environment }}"
-  ENVIRONMENT_WWEX = "${ENVIRONMENT}-ss"
-  ENVIRONMENT_UNI = "${ENVIRONMENT}-uni"
+  ENVIRONMENT_WWEX = "$ENVIRONMENT-ss"
+  ENVIRONMENT_UNI = "$ENVIRONMENT-uni"
   EMAIL_RECIPIENTS = "20fb4043.wwex.support@amer.teams.ms"
         
 jobs:

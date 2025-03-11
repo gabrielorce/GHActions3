@@ -6,16 +6,16 @@ def increment_version(version):
     """
     version=version.strip()
     if '-' in version:
-        print(f"{version} already contains a '-', incrementing version")
+#        print(f"{version} already contains a '-', incrementing version")
         version_split = version.rsplit('-', 1)  # Split from the right to avoid breaking versions with multiple '-'
         try:
             version_int = int(version_split[1]) + 1
             version = f"{version_split[0]}-{version_int}"
         except ValueError:
-            print("ERROR: The version suffix after '-' is not a number.")
+#            print("ERROR: The version suffix after '-' is not a number.")
             sys.exit(1)
     else:
-        print(f"{version} is missing a '-', adding '-1' to the version")
+#        print(f"{version} is missing a '-', adding '-1' to the version")
         version = f"{version}-1"
     
     return version

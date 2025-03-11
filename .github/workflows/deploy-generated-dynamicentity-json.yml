@@ -6,9 +6,6 @@ on:
   workflow_dispatch:
 
  
-jobs:
-  run-commands:
-    runs-on: ubuntu-latest
     inputs:
       HELM_CHART:
         description: 'Version of the service to deploy - must match Helm chart version in Nexus (example: 1.0.0)'
@@ -43,6 +40,8 @@ env:
 
 jobs:
   Determine-values:
+    runs-on: ubuntu-latest
+    
     steps:
       - name: Determine S3 Bucket End
         run: |

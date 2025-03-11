@@ -1,0 +1,134 @@
+# script that exists inside https://build.control-wwex.com/view/UI/job/deploy-generated-dynamicentity-json/
+
+name: ui-front-end-content_deploy-generated-dynamicentity-json
+
+on:
+  workflow_dispatch:
+
+ 
+jobs:
+  run-commands:
+    runs-on: ubuntu-latest
+    inputs:
+      HELM_CHART:
+        description: 'Version of the service to deploy - must match Helm chart version in Nexus (example: 1.0.0)'
+        required: true
+        type: string
+      ENVIRONMENT:
+        type: choice
+        description: "Short name of environment to deploy to (e.g. assembly, funct, etc.)/n - assembly: Assembly env /n - funct: Functional env /n - integ: Integration env /n - migrate: Data Migration env /n - perf: Performance env /n - lab: Lab env /n - lab-dr: lab DR"
+        options:
+        - assembly
+        - funct
+        - integ
+        - migrate
+        - perf
+        - lab
+        - lab-dr
+        - uat
+        - stage
+        - prod2
+
+
+env:
+     EMAIL_RECIPIENTS: '2cb61966.wwex.com@amer.teams.ms'
+     S3_BUCKET: 'wwex-ui-content'
+#     FORCE_DEPLOY_TO_DR: "${params.FORCE_DEPLOY_TO_DR}"
+     DB_ROLE: "database_cloning_role"
+     SECRET: "/secret/wwex"
+     PGHOST_KEY: "aurora1.host"
+     PGPW_KEY: "aurora1.password"
+     PGPORT_KEY: "aurora1.port"
+     PGUSER_KEY: "aurora1.username"
+
+jobs:
+  Determine-values:
+    steps:
+      - name: Determine S3 Bucket End
+        run: |
+          get_s3_bucket_end() {
+            case "${{ env.ENVIRONMENT }}" in
+              assembly) echo "assembly";;
+              lab) echo "lab";;
+              lab-dr) echo "lab-dr";;
+              uat) echo "uat";;
+              stage) echo "stage";;
+              prod | prod2) echo "prod2";;
+              stage-dr) echo "stage-dr";;
+              prod-dr | prod2-dr) echo "prod2-dr";;
+              migrate) echo "migrate";;
+              funct) echo "funct";;
+              integ) echo "integ";;
+              perf) echo "perf";;
+              *) echo "no s3 bucket end";;
+            esac
+          }
+
+          S3_BUCKET_END=$(get_s3_bucket_end)
+          echo "S3_BUCKET_END=$S3_BUCKET_END" >> $GITHUB_ENV
+
+      - name: Determine AWS Region
+        run: |
+          get_region() {
+            if [[ ! "${{ env.ENVIRONMENT }}" =~ dr ]]; then
+              echo "us-east-1"
+            else
+              echo "us-west-2"
+            fi
+          }
+
+          AWS_REGION=$(get_region)
+          echo "AWS_REGION=$AWS_REGION" >> $GITHUB_ENV
+
+      - name: Determine AWS Role Account
+        run: |
+          get_role_account() {
+            case "${{ env.ENVIRONMENT }}" in
+              assembly) echo "202671976033";;
+              lab | lab-dr) echo "233177744977";;
+              uat) echo "222282836101";;
+              stage* | stage-dr) echo "295079164051";;
+              prod* | prod-dr) echo "229714444349";;
+              migrate) echo "612538007065";;
+              funct) echo "900956131955";;
+              integ) echo "018364867140";;
+              perf) echo "384794895865";;
+              *) echo "no accounts";;
+            esac
+          }
+
+          AWS_ROLE_ACCOUNT=$(get_role_account)
+          echo "AWS_ROLE_ACCOUNT=$AWS_ROLE_ACCOUNT" >> $GITHUB_ENV
+
+      - name: Determine Helm Chart Version
+        run: |
+          get_version() {
+            local helm_chart_version="$1"
+            local env="$2"
+            local region
+
+            if [[ ! "$env" =~ dr ]]; then
+              region="us-east-1"
+            else
+              region="us-west-2"
+            fi
+
+            if [[ "$helm_chart_version" == "latest" ]]; then
+              aws ecr describe-images --repository-name com.wwex.container.dynamicentity.generator \
+                --image-ids imageTag=latest --query 'imageDetails[].imageTags' \
+                --region "$region" --output text | awk '{print $2}'
+            else
+              echo "$helm_chart_version"
+            fi
+          }
+
+          HELM_VERSION=$(get_version "${{ env.HELM_CHART_VERSION }}" "${{ env.ENVIRONMENT }}")
+          echo "HELM_VERSION=$HELM_VERSION" >> $GITHUB_ENV
+
+      - name: Show values
+        run: |
+          echo "$S3_BUCKET_END: $S3_BUCKET_END"
+          echo "AWS_REGION: $AWS_REGION"
+          echo "AWS_ROLE_ACCOUNT: $AWS_ROLE_ACCOUNT"
+          echo "Helm version: $HELM_VERSION"
+          

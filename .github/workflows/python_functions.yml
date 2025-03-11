@@ -36,9 +36,9 @@ jobs:
 
       - name: Show Input Selection
         run: |
-          echo "Version: ${{ inputs.version }} "
-          echo "Input Tag: ${{ inputs.TAG }} "          
-          echo "CONTENT_BUCKET: ${{ inputs.CONTENT_BUCKET }} "
+          echo "Version: ${{ inputs.version }}"
+          echo "Input Tag: ${{ inputs.TAG }}"          
+          echo "CONTENT_BUCKET: ${{ inputs.CONTENT_BUCKET }}"
 
 
 
@@ -51,9 +51,9 @@ jobs:
       - name: Run Version Increment Script
         id: increment_version
         run: |
-          python scripts/incrementVersionNumber.py ${{ github.event.inputs.version }} 
+          updated_version=$(python scripts/incrementVersionNumber.py ${{ github.event.inputs.version }} )
           echo "set UPDATED_VERSION variable"
-          echo "UPDATED_VERSION=${updated_version} >> $GITHUB_ENV
+          echo "UPDATED_VERSION=${updated_version}" >> $GITHUB_ENV
           echo "Updated Version: $UPDATED_VERSION"
           echo "done setting UPDATED_VERSION variable"
 

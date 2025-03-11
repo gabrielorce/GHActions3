@@ -2,9 +2,15 @@ name: Increment Version
 
 on:
   workflow_dispatch:
+
+  # https://github.blog/changelog/2021-11-10-github-actions-input-types-for-manual-workflows/
     inputs:
       version:
         description: "Current version"
+        required: true
+        type: string
+      TAG:
+        description: 'Test scenario tags'
         required: true
         type: string
       CONTENT_BUCKET:
@@ -28,10 +34,19 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
 
+      - name: Show Input Selection
+        run: |
+          echo "Version: ${{ inputs.version }} "
+          echo "Input Tag: ${{ inputs.TAG }} "          
+          echo "CONTENT_BUCKET: ${{ inputs.CONTENT_BUCKET }} "
+
+
+
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.x'
+
 
       - name: Run Version Increment Script
         id: increment_version

@@ -7,7 +7,20 @@ on:
         description: "Current version"
         required: true
         type: string
-
+      CONTENT_BUCKET:
+        type: choice
+        description: nonprod -  assembly, data-migration, functional, integration and performance
+        options:
+        - lab
+        - assembly
+        - funct
+        - integ
+        - migrate
+        - perf
+        - uat
+        - stage
+        - prod2
+        
 jobs:
   increment-version:
     runs-on: ubuntu-latest

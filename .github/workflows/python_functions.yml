@@ -51,7 +51,7 @@ jobs:
       - name: Run Version Increment Script
         id: increment_version
         run: |
-          updated_version=$(python scripts/incrementVersionNumber.py ${{ github.event.inputs.version }} )
+          python scripts/incrementVersionNumber.py ${{ github.event.inputs.version }} 
           echo "set UPDATED_VERSION variable"
           echo "UPDATED_VERSION=${updated_version} >> $GITHUB_ENV
           echo "Updated Version: $UPDATED_VERSION"

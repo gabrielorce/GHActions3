@@ -4,7 +4,7 @@ def increment_version(version):
     """
     Increments the version if it contains a '-', otherwise appends '-1'.
     """
-    version=version.trim()
+    version=version.strip()
     if '-' in version:
         print(f"{version} already contains a '-', incrementing version")
         version_split = version.rsplit('-', 1)  # Split from the right to avoid breaking versions with multiple '-'

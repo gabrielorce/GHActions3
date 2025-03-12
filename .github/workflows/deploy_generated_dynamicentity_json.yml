@@ -151,8 +151,12 @@ jobs:
           echo "AWS REGION: $AWS_REGION"
           echo "AWS ROLE ACCOUNT: $AWS_ROLE_ACCOUNT"
           echo "Helm version: {{ $env.strProcessedVersion }}"
-          echo "FORCE_DEPLOY_TO_DR: {{ $inputs.FORCE_DEPLOY_TO_DR }}"
+          echo "FORCE_DEPLOY_TO_DR: ${{ inputs.FORCE_DEPLOY_TO_DR }}"
 
-      - name: Define if exact version provided
+      - name: Skip everything for DR Environment
         run: |
-          echo "CONTINUE"
+          if [[ ${{ inputs.ENVIRONMENT }} == *"-dr" && ${{ inputs.FORCE_DEPLOY_TO_DR }} == "false" ]]; then
+            echo "This job aborts when run against DR unless the check Force Deploy To DR is checked."
+            echo "SKIP THIS JOB FOR DR ENVIRONMENTS"
+            exit 1
+          fi

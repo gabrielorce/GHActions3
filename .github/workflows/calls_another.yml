@@ -26,10 +26,14 @@ on:
         
 
 jobs:
+
   call_another:
     runs-on: ubuntu-latest
     if: ${{ inputs.ENVIRONMENT == 'assembly' }}
     steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        
       - name: Trigger deploy_generated_dynamicentity_json.yml
         uses: ./.github/workflows/deploy_generated_dynamicentity_json.yml
         with:

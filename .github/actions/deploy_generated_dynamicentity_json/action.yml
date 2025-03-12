@@ -1,0 +1,21 @@
+# .github/actions/deploy_generated_dynamicentity_json/action.yml
+name: "Deploy Generated Dynamic Entity JSON"
+description: "Deploys the dynamic entity JSON to an environment"
+
+inputs:
+  ENVIRONMENT:
+    description: "Target environment"
+    required: true
+  HELM_CHART_VERSION:
+    description: "Helm chart version"
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+    
+    - name: Deploy JSON
+      run: echo "Deploying to ${{ inputs.ENVIRONMENT }} with Helm Chart ${{ inputs.HELM_CHART_VERSION }}"
+      shell: bash

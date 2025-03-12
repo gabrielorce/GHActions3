@@ -193,3 +193,16 @@ jobs:
           aws sts assume-role --role-arn arn:aws:iam::${{ env.ROLE_ACCOUNT }}:role/AWSDeployui-frontend-uniWebAppForJenkinsRole-${{ env.REGION }} --role-session-name github-actions-session
           aws s3 rm s3://${{ env.S3_BUCKET }}-uni-${{ env.S3_BUCKET_END }}-${{ env.REGION }}/content/prefs --recursive --quiet
           aws s3 cp ./ s3://${{ env.S3_BUCKET }}-uni-${{ env.S3_BUCKET_END }}-${{ env.REGION }}/content/prefs --recursive
+
+
+      - name: Invalidate Cloudfront Cache For SS
+        run: |
+          echo "Invalidate Cloudfront Cache For $ENVIRONMENT SS"
+          echo "Invalidate CloudFront Cache for SS"
+          aws cloudfront create-invalidation --distribution-id \$(aws ssm get-parameters --region ${{ env.REGION }} --names webapp-ui-frontend-distribution-id --query Parameters[0].Value --output text) --paths "/*"
+
+      - name: Invalidate Cloudfront Cache For UNI
+        run: |
+          echo "Invalidate Cloudfront Cache For $ENVIRONMENT SS"
+          echo "Invalidate CloudFront Cache UNI"
+          aws cloudfront create-invalidation --distribution-id \$(aws ssm get-parameters --region ${{ env.REGION }} --names webapp-ui-uni-frontend-distribution-id --query Parameters[0].Value --output text) --paths "/*"

@@ -74,7 +74,7 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
 
-      - name: Determine S3 Bucket End
+      - name: Determine S3 Bucket End for  ${{ env.ENVIRONMENT }} 
         run: |
           get_s3_bucket_end() {
             case "${{ inputs.ENVIRONMENT }}" in
@@ -172,7 +172,7 @@ jobs:
         run: |
             # DynamicEntity section not migrated since it is for deprecated section - POSTGRES
 
-      - name: Push Content For SS
+      - name: Push Content For ${{ env.ENVIRONMENT }} SS
         run: |
           echo "Pushing Content For ${{ inputs.ENVIRONMENT }} SS"
           version="${{ env.strProcessedVersion }}"
@@ -183,7 +183,7 @@ jobs:
           aws s3 rm s3://${{ env.S3_BUCKET }}-${{ env.S3_BUCKET_END }}-${{ env.REGION }}/content/prefs --recursive --quiet
           aws s3 cp ./ s3://${{ env.S3_BUCKET }}-${{ env.S3_BUCKET_END }}-${{ env.REGION }}/content/prefs --recursive
 
-      - name: Push Content For UNI
+      - name: Push Content For ${{ env.ENVIRONMENT }} UNI
         run: |
           echo "Pushing Content For ${{ inputs.ENVIRONMENT }} UNI"
           version="${{ env.strProcessedVersion }}"

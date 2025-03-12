@@ -7,7 +7,7 @@ on:
 
  
     inputs:
-      HELM_CHART:
+      HELM_CHART_VERSION:
         description: 'Version of the service to deploy - must match Helm chart version in Nexus (example: 1.0.0)'
         required: true
         type: string
@@ -126,8 +126,8 @@ jobs:
 
       - name: Show values
         run: |
-          echo "S3_BUCKET_END: $S3_BUCKET_END"
-          echo "AWS_REGION: $AWS_REGION"
-          echo "AWS_ROLE_ACCOUNT: $AWS_ROLE_ACCOUNT"
+          echo "S3 BUCKET END: $S3_BUCKET_END"
+          echo "AWS REGION: $AWS_REGION"
+          echo "AWS ROLE ACCOUNT: $AWS_ROLE_ACCOUNT"
           echo "Helm version: $HELM_VERSION"
           

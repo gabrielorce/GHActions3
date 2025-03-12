@@ -35,7 +35,7 @@ jobs:
         uses: actions/checkout@v4
         
       - name: Trigger deploy_generated_dynamicentity_json.yml
-        uses: ./.github/workflows/deploy_generated_dynamicentity_json
+        uses: ./.github/workflows/deploy_generated_dynamicentity_json@main
         with:
           ENVIRONMENT: ${{ inputs.ENVIRONMENT }}
           HELM_CHART_VERSION: ${{ inputs.HELM_CHART_VERSION }}

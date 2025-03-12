@@ -126,7 +126,7 @@ jobs:
 
       - name: Show values
         run: |
-          echo "$S3_BUCKET_END: $S3_BUCKET_END"
+          echo "S3_BUCKET_END: $S3_BUCKET_END"
           echo "AWS_REGION: $AWS_REGION"
           echo "AWS_ROLE_ACCOUNT: $AWS_ROLE_ACCOUNT"
           echo "Helm version: $HELM_VERSION"

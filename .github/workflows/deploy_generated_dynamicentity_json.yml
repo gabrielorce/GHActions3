@@ -131,10 +131,10 @@ jobs:
               region="us-west-2"
             fi
 
-            if [[ "$helm_chart_version" == "latest" ]]; then
-              aws ecr describe-images --repository-name wwex
-              --image-ids imageTag=latest --query 'imageDetails[].imageTags'
-              --region ''' + $region +''' --output text | awk '{print $2}
+            if [[ "$helm_chart_version" == "latest" ]]; then \
+              aws ecr describe-images --repository-name wwex \
+              --image-ids imageTag=latest --query 'imageDetails[].imageTags' \
+              --region "$region" --output text | awk '{print $2}'
             else
               echo "$helm_chart_version"
             fi

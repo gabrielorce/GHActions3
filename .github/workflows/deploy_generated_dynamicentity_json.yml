@@ -46,7 +46,7 @@ jobs:
       - name: Determine S3 Bucket End
         run: |
           get_s3_bucket_end() {
-            case "${{ env.ENVIRONMENT }}" in
+            case "${{ inputs.ENVIRONMENT }}" in
               assembly) echo "assembly";;
               lab) echo "lab";;
               lab-dr) echo "lab-dr";;
@@ -82,7 +82,7 @@ jobs:
       - name: Determine AWS Role Account
         run: |
           get_role_account() {
-            case "${{ env.ENVIRONMENT }}" in
+            case "${{ inputs.ENVIRONMENT }}" in
               assembly) echo "202671976033";;
               lab | lab-dr) echo "233177744977";;
               uat) echo "222282836101";;
@@ -121,7 +121,7 @@ jobs:
             fi
           }
 
-          HELM_VERSION=$(get_version "${{ env.HELM_CHART_VERSION }}" "${{ env.ENVIRONMENT }}")
+          HELM_VERSION=$(get_version "${{ inputs.HELM_CHART_VERSION }}" "${{ inputs.ENVIRONMENT }}")
           echo "HELM_VERSION=$HELM_VERSION" >> $GITHUB_ENV
 
       - name: Show values

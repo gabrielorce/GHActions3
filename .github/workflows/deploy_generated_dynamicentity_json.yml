@@ -60,14 +60,14 @@ jobs:
           }
 
           AWS_REGION=$(get_region)
-          echo "AWS_REGION=$AWS_REGION" >> $GITHUB_ENV
+          echo "REGION=$AWS_REGION" >> $GITHUB_ENV
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ env.AWS_REGION }}
+          aws-region: ${{ env.REGION }}
 
       - name: Login to Amazon ECR
         id: login-ecr
@@ -132,16 +132,16 @@ jobs:
             fi
 
             if [[ "$helm_chart_version" == "latest" ]]; then
-              aws ecr describe-images --repository-name ${{ env.ECR_REGISTRY }}
+              aws ecr describe-images --repository-name wwex
               --image-ids imageTag=latest --query 'imageDetails[].imageTags'
-              --region ''' + "$env.REGION" +''' --output text | awk '{print $2}
+              --region ''' + $region +''' --output text | awk '{print $2}
             else
               echo "$helm_chart_version"
             fi
           }
 
-          HELM_VERSION=$(get_version "${{ inputs.HELM_CHART_VERSION }}" "${{ inputs.ENVIRONMENT }}" )
-          echo "HELM_VERSION=$HELM_VERSION" >> $GITHUB_ENV
+          HELM_VERSION=$(get_version "${{ inputs.HELM_CHART_VERSION }}" "${{ inputs.ENVIRONMENT }}" "{{ $env.REGION }}")
+          echo "strProcessedVersion=$HELM_VERSION" >> $GITHUB_ENV
 
       - name: Show values
         run: |
@@ -149,12 +149,8 @@ jobs:
           echo "S3 BUCKET END: $S3_BUCKET_END"
           echo "AWS REGION: $AWS_REGION"
           echo "AWS ROLE ACCOUNT: $AWS_ROLE_ACCOUNT"
-          echo "Helm version: $HELM_VERSION"
+          echo "Helm version: {{ $strProcessedVersion }}"
 
       - name: Define if exact version provided
         run: |
-          echo "Date/Time in CST: $cds"
-          echo "S3 BUCKET END: $S3_BUCKET_END"
-          echo "AWS REGION: $AWS_REGION"
-          echo "AWS ROLE ACCOUNT: $AWS_ROLE_ACCOUNT"
-          echo "Helm version: $HELM_VERSION"
+          echo "CONTINUE"

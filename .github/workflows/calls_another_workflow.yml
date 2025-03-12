@@ -32,3 +32,4 @@ jobs:
         with:
           ENVIRONMENT: ${{ inputs.ENVIRONMENT }}
           HELM_CHART_VERSION: ${{ inputs.HELM_CHART_VERSION }}
+        secrets: inherit  # Ensures secrets are passed

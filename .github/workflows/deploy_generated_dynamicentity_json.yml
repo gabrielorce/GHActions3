@@ -140,9 +140,9 @@ jobs:
             fi
           }
 
-          HELM_VERSION=$(get_version "${{ inputs.HELM_CHART_VERSION }}" "${{ inputs.ENVIRONMENT }}" "{{ $env.REGION }}")
+          HELM_VERSION=$(get_version "${{ inputs.HELM_CHART_VERSION }}" "${{ inputs.ENVIRONMENT }}" "${{ $env.REGION }}")
           echo "strProcessedVersion=$HELM_VERSION" >> $GITHUB_ENV
-          echo "Using dynamicentity.generator version:  {{ $env.strProcessedVersion }}"
+          echo "Using dynamicentity.generator version:  ${{ env.strProcessedVersion }}"
 
       - name: Show values
         run: |
@@ -150,13 +150,15 @@ jobs:
           echo "S3 BUCKET END: $S3_BUCKET_END"
           echo "AWS REGION: $AWS_REGION"
           echo "AWS ROLE ACCOUNT: $AWS_ROLE_ACCOUNT"
-          echo "Helm version: {{ $env.strProcessedVersion }}"
+          echo "Helm version: ${{ env.strProcessedVersion }}"
           echo "FORCE_DEPLOY_TO_DR: ${{ inputs.FORCE_DEPLOY_TO_DR }}"
 
       - name: Skip everything for DR Environment
         run: |
-          if [[ "${ENVIRONMENT}" == *"-dr"* && "${FORCE_DEPLOY_TO_DR}" == "false" ]]; then
+          if [[ "${{ inputs.ENVIRONMENT }}" == *"-dr"* && "${{ env.FORCE_DEPLOY_TO_DR}}" == "false" ]]; then
             echo "This job aborts when run against DR unless the check Force Deploy To DR is checked."
             echo "SKIP THIS JOB FOR DR ENVIRONMENTS"
             exit 1
+          else
+            echo "NOT SKIPPING"
           fi

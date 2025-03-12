@@ -37,7 +37,7 @@ env:
      PGPW_KEY: "aurora1.password"
      PGPORT_KEY: "aurora1.port"
      PGUSER_KEY: "aurora1.username"
-     ECR_REGISTRY: 661604053278.dkr.ecr.us-east-1.amazonaws.com
+     FORCE_DEPLOY_TO_DR: false
      
 jobs:
   Determine-values:
@@ -151,6 +151,7 @@ jobs:
           echo "AWS REGION: $AWS_REGION"
           echo "AWS ROLE ACCOUNT: $AWS_ROLE_ACCOUNT"
           echo "Helm version: {{ $env.strProcessedVersion }}"
+          echo "FORCE_DEPLOY_TO_DR: {{ $inputs.FORCE_DEPLOY_TO_DR }}"
 
       - name: Define if exact version provided
         run: |

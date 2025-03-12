@@ -109,7 +109,7 @@ jobs:
           get_version() {
             local helm_chart_version="$1"
             local env="$2"
-            local region
+            local region="$3"
 
             if [[ ! "$env" =~ dr ]]; then
               region="us-east-1"

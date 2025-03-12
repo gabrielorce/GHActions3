@@ -57,14 +57,15 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        
       - name: Get Date/Time in CST
         run : |
           cds=$(TZ=CST6CDT date +%Y-%m-%d-%H:%M:%S);    # 'yyyy/MM/dd HH:mm'
           echo "cds=$cds" >> $GITHUB_ENV
 
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-        
+
       - name: Determine AWS Region
         run: |
           get_region() {

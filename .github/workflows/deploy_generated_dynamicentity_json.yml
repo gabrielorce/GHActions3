@@ -6,7 +6,6 @@ name: ui-front-end-content_deploy-generated-dynamicentity-json
 on:
   workflow_dispatch:
 
- 
     inputs:
       HELM_CHART_VERSION:
         description: 'Version of the service to deploy - must match Helm chart version in Nexus (example: 1.0.0)'
@@ -27,6 +26,16 @@ on:
         - stage
         - prod2
 
+  workflow_call:
+    inputs:
+       HELM_CHART_VERSION:
+        description: 'Version of the service to deploy - must match Helm chart version in Nexus (example: 1.0.0)'
+        required: true
+        type: string
+       ENVIRONMENT:
+        description: env
+        required: true
+        type: string
 
 env:
      EMAIL_RECIPIENTS: '2cb61966.wwex.com@amer.teams.ms'

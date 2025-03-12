@@ -140,7 +140,7 @@ jobs:
             fi
           }
 
-          HELM_VERSION=$(get_version "${{ inputs.HELM_CHART_VERSION }}" "${{ inputs.ENVIRONMENT }}" "${{ $env.REGION }}")
+          HELM_VERSION=$(get_version "${{ inputs.HELM_CHART_VERSION }}" "${{ inputs.ENVIRONMENT }}" "${{ env.REGION }}")
           echo "strProcessedVersion=$HELM_VERSION" >> $GITHUB_ENV
           echo "Using dynamicentity.generator version:  ${{ env.strProcessedVersion }}"
 

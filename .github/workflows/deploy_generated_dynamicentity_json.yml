@@ -37,7 +37,8 @@ env:
      PGPW_KEY: "aurora1.password"
      PGPORT_KEY: "aurora1.port"
      PGUSER_KEY: "aurora1.username"
-
+     ECR_REGISTRY: 661604053278.dkr.ecr.us-east-1.amazonaws.com
+     
 jobs:
   Determine-values:
     runs-on: ubuntu-latest
@@ -67,7 +68,10 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ env.AWS_REGION }}
-          
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
 
       - name: Determine S3 Bucket End
         run: |
@@ -128,15 +132,15 @@ jobs:
             fi
 
             if [[ "$helm_chart_version" == "latest" ]]; then
-              aws ecr describe-images --repository-name com.wwex.container.dynamicentity.generator \
-                --image-ids imageTag=latest --query 'imageDetails[].imageTags' \
-                --region "$region" --output text | awk '{print $2}'
+              aws ecr describe-images --repository-name ${{ env.ECR_REGISTRY }}
+              --image-ids imageTag=latest --query 'imageDetails[].imageTags'
+              --region ''' + "$env.REGION" +''' --output text | awk '{print $2}
             else
               echo "$helm_chart_version"
             fi
           }
 
-          HELM_VERSION=$(get_version "${{ inputs.HELM_CHART_VERSION }}" "${{ inputs.ENVIRONMENT }}")
+          HELM_VERSION=$(get_version "${{ inputs.HELM_CHART_VERSION }}" "${{ inputs.ENVIRONMENT }}" )
           echo "HELM_VERSION=$HELM_VERSION" >> $GITHUB_ENV
 
       - name: Show values

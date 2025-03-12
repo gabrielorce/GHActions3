@@ -1,4 +1,5 @@
 # script that exists inside https://build.control-wwex.com/view/UI/job/deploy-generated-dynamicentity-json/
+# NOTE:  This works Assuming AWS credentials are configured as secrets in GitHub Actions
 
 name: ui-front-end-content_deploy-generated-dynamicentity-json
 
@@ -52,7 +53,7 @@ jobs:
       - name: Determine AWS Region
         run: |
           get_region() {
-            if [[ ! "${{ env.ENVIRONMENT }}" =~ dr ]]; then
+            if [[ ! "${{ inputs.ENVIRONMENT }}" =~ dr ]]; then
               echo "us-east-1"
             else
               echo "us-west-2"
@@ -116,7 +117,7 @@ jobs:
           }
 
           AWS_ROLE_ACCOUNT=$(get_role_account)
-          echo "AWS_ROLE_ACCOUNT=$AWS_ROLE_ACCOUNT" >> $GITHUB_ENV
+          echo "ROLE_ACCOUNT=$AWS_ROLE_ACCOUNT" >> $GITHUB_ENV
 
       - name: Set Version/GetVersion - Determine Helm Chart Version
         run: |
@@ -149,16 +150,46 @@ jobs:
           echo "Date/Time in CST: $cds"
           echo "S3 BUCKET END: $S3_BUCKET_END"
           echo "AWS REGION: $AWS_REGION"
-          echo "AWS ROLE ACCOUNT: $AWS_ROLE_ACCOUNT"
+          echo "AWS ROLE ACCOUNT: $ROLE_ACCOUNT"
           echo "Helm version: ${{ env.strProcessedVersion }}"
-          echo "FORCE_DEPLOY_TO_DR: ${{ inputs.FORCE_DEPLOY_TO_DR }}"
+          echo "FORCE_DEPLOY_TO_DR: ${{ env.FORCE_DEPLOY_TO_DR }}"
 
       - name: Skip everything for DR Environment
         run: |
-          if [[ "${{ inputs.ENVIRONMENT }}" == *"-dr"* && "${{ env.FORCE_DEPLOY_TO_DR}}" == "false" ]]; then
+          if [[ "${{ inputs.ENVIRONMENT }}" == *"-dr"* && "${{ env.FORCE_DEPLOY_TO_DR }}" == "false" ]]; then
             echo "This job aborts when run against DR unless the check Force Deploy To DR is checked."
             echo "SKIP THIS JOB FOR DR ENVIRONMENTS"
             exit 1
           else
             echo "NOT SKIPPING"
           fi
+
+      - name: Get Credentials
+        run: |
+            # this section not migrated since it is for deprecated section - POSTGRES
+
+      - name: Generate Files for DynamicEntity and Push to S3
+        run: |
+            # DynamicEntity section not migrated since it is for deprecated section - POSTGRES
+
+      - name: Push Content For SS
+        run: |
+          echo "Pushing Content For ${{ inputs.ENVIRONMENT }} SS"
+          version="${{ env.strProcessedVersion }}"
+          cds=$(TZ='America/Chicago' date +'%Y/%m/%d %H:%M')
+          echo "{\"version\" : \"com.wwex.container.dynamicentity.generator:$version\", \"Deployment Date/Time\" : \"$cds\"}" > ./wwex-ui-prefs-version.json
+          
+          aws sts assume-role --role-arn arn:aws:iam::${{ env.ROLE_ACCOUNT }}:role/AWSDeployui-frontendWebAppForJenkinsRole-${{ env.REGION }} --role-session-name github-actions-session
+          aws s3 rm s3://${{ env.S3_BUCKET }}-${{ env.S3_BUCKET_END }}-${{ env.REGION }}/content/prefs --recursive --quiet
+          aws s3 cp ./ s3://${{ env.S3_BUCKET }}-${{ env.S3_BUCKET_END }}-${{ env.REGION }}/content/prefs --recursive
+
+      - name: Push Content For UNI
+        run: |
+          echo "Pushing Content For ${{ inputs.ENVIRONMENT }} UNI"
+          version="${{ env.strProcessedVersion }}"
+          cds=$(TZ='America/Chicago' date +'%Y/%m/%d %H:%M:%S')
+          echo "{\"version\" : \"com.wwex.container.dynamicentity.generator:$version\", \"Deployment Date/Time\" : \"$cds\"}" > ./wwex-ui-prefs-version.json
+          
+          aws sts assume-role --role-arn arn:aws:iam::${{ env.ROLE_ACCOUNT }}:role/AWSDeployui-frontend-uniWebAppForJenkinsRole-${{ env.REGION }} --role-session-name github-actions-session
+          aws s3 rm s3://${{ env.S3_BUCKET }}-uni-${{ env.S3_BUCKET_END }}-${{ env.REGION }}/content/prefs --recursive --quiet
+          aws s3 cp ./ s3://${{ env.S3_BUCKET }}-uni-${{ env.S3_BUCKET_END }}-${{ env.REGION }}/content/prefs --recursive

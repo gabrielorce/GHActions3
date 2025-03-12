@@ -44,7 +44,9 @@ jobs:
     
     steps:
       - name: Get Date/Time in CST
-        run : cds=$(TZ=CST6CDT date +%Y-%m-%d-%H:%M:%S);
+        run : |
+          cds=$(TZ=CST6CDT date +%Y-%m-%d-%H:%M:%S);
+          echo "cds=$cds" >> $GITHUB_ENV
 
       - name: Determine S3 Bucket End
         run: |

@@ -37,4 +37,4 @@ jobs:
 
     - name: Deploy Helm chart
       run: |
-        helm upgrade --install wwexsample --namespace my-namespace 
+        helm upgrade --install wwexsample ./wwexsample --namespace my-namespace 

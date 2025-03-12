@@ -1,5 +1,5 @@
 # script that exists inside https://build.control-wwex.com/view/UI/job/deploy-generated-dynamicentity-json/
-# NOTE:  This works Assuming AWS credentials are configured as secrets in GitHub Actions
+# NOTE:  This works Assuming AWS credentials are configured as secrets in GitHub Actions Configuration section
 
 name: ui-front-end-content_deploy-generated-dynamicentity-json
 
@@ -33,11 +33,11 @@ env:
      S3_BUCKET: 'wwex-ui-content'
 #     FORCE_DEPLOY_TO_DR: "${params.FORCE_DEPLOY_TO_DR}"
      DB_ROLE: "database_cloning_role"
-     SECRET: "/secret/wwex"
-     PGHOST_KEY: "aurora1.host"
-     PGPW_KEY: "aurora1.password"
-     PGPORT_KEY: "aurora1.port"
-     PGUSER_KEY: "aurora1.username"
+#     SECRET: "/secret/wwex"        # apparently not used in the original jenkinsfile
+#     PGHOST_KEY: "aurora1.host"
+#     PGPW_KEY: "aurora1.password"
+#     PGPORT_KEY: "aurora1.port"
+#     PGUSER_KEY: "aurora1.username"
      FORCE_DEPLOY_TO_DR: false
      
 jobs:

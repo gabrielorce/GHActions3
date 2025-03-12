@@ -142,6 +142,7 @@ jobs:
 
           HELM_VERSION=$(get_version "${{ inputs.HELM_CHART_VERSION }}" "${{ inputs.ENVIRONMENT }}" "{{ $env.REGION }}")
           echo "strProcessedVersion=$HELM_VERSION" >> $GITHUB_ENV
+          echo "Using dynamicentity.generator version:  {{ $env.strProcessedVersion }}"
 
       - name: Show values
         run: |
@@ -149,7 +150,7 @@ jobs:
           echo "S3 BUCKET END: $S3_BUCKET_END"
           echo "AWS REGION: $AWS_REGION"
           echo "AWS ROLE ACCOUNT: $AWS_ROLE_ACCOUNT"
-          echo "Helm version: {{ $strProcessedVersion }}"
+          echo "Helm version: {{ $env.strProcessedVersion }}"
 
       - name: Define if exact version provided
         run: |

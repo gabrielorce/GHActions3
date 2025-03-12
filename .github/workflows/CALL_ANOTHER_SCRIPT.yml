@@ -29,14 +29,8 @@ jobs:
 
   call_another:
     runs-on: ubuntu-latest
-    if: ${{ inputs.ENVIRONMENT == 'assembly' }}
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-        
-      - name: Run deploy_generated_dynamicentity_json.yml
-        run: bash .github/workflows/deploy_generated_dynamicentity_json.yml
-#        uses: ./.github/workflows/deploy_generated_dynamicentity_json.yml
-#        with:
-#          ENVIRONMENT: assembly
-#          HELM_CHART_VERSION: 33.2.3
+      - name: Trigger deploy_generated_dynamicentity_json
+        uses: ./.github/actions/deploy_generated_dynamicentity_json  ✅ Now points to the composite action
+        with:
+          ENVIRONMENT: ${{ inputs.ENVIRONMENT }}
+          HELM_CHART_VERSION: ${{ inputs.HELM_CHART_VERSION }}

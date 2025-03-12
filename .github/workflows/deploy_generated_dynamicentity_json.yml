@@ -136,4 +136,11 @@ jobs:
           echo "AWS REGION: $AWS_REGION"
           echo "AWS ROLE ACCOUNT: $AWS_ROLE_ACCOUNT"
           echo "Helm version: $HELM_VERSION"
-          
+
+      - name: Define if exact version provided
+        run: |
+          echo "Date/Time in CST: $cds"
+          echo "S3 BUCKET END: $S3_BUCKET_END"
+          echo "AWS REGION: $AWS_REGION"
+          echo "AWS ROLE ACCOUNT: $AWS_ROLE_ACCOUNT"
+          echo "Helm version: $HELM_VERSION"

@@ -155,7 +155,7 @@ jobs:
 
       - name: Skip everything for DR Environment
         run: |
-          if [[ ${{ inputs.ENVIRONMENT }} == *"-dr" && ${{ inputs.FORCE_DEPLOY_TO_DR }} == "false" ]]; then
+          if [[ "${ENVIRONMENT}" == *"-dr"* && "${FORCE_DEPLOY_TO_DR}" == "false" ]]; then
             echo "This job aborts when run against DR unless the check Force Deploy To DR is checked."
             echo "SKIP THIS JOB FOR DR ENVIRONMENTS"
             exit 1

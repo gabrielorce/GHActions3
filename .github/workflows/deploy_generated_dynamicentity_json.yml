@@ -43,6 +43,9 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
+      - name: Get Date/Time in CST
+        run : cds=$(TZ=CST6CDT date +%Y-%m-%d-%H:%M:%S);
+
       - name: Determine S3 Bucket End
         run: |
           get_s3_bucket_end() {
@@ -126,6 +129,7 @@ jobs:
 
       - name: Show values
         run: |
+          echo "Date/Time in CST: $cds"
           echo "S3 BUCKET END: $S3_BUCKET_END"
           echo "AWS REGION: $AWS_REGION"
           echo "AWS ROLE ACCOUNT: $AWS_ROLE_ACCOUNT"

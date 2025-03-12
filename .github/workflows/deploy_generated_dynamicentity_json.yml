@@ -48,6 +48,27 @@ jobs:
           cds=$(TZ=CST6CDT date +%Y-%m-%d-%H:%M:%S);    # 'yyyy/MM/dd HH:mm'
           echo "cds=$cds" >> $GITHUB_ENV
 
+      - name: Determine AWS Region
+        run: |
+          get_region() {
+            if [[ ! "${{ env.ENVIRONMENT }}" =~ dr ]]; then
+              echo "us-east-1"
+            else
+              echo "us-west-2"
+            fi
+          }
+
+          AWS_REGION=$(get_region)
+          echo "AWS_REGION=$AWS_REGION" >> $GITHUB_ENV
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+          
+
       - name: Determine S3 Bucket End
         run: |
           get_s3_bucket_end() {
@@ -71,19 +92,8 @@ jobs:
           S3_BUCKET_END=$(get_s3_bucket_end)
           echo "S3_BUCKET_END=$S3_BUCKET_END" >> $GITHUB_ENV
 
-      - name: Determine AWS Region
-        run: |
-          get_region() {
-            if [[ ! "${{ env.ENVIRONMENT }}" =~ dr ]]; then
-              echo "us-east-1"
-            else
-              echo "us-west-2"
-            fi
-          }
 
-          AWS_REGION=$(get_region)
-          echo "AWS_REGION=$AWS_REGION" >> $GITHUB_ENV
-
+          
       - name: Determine AWS Role Account
         run: |
           get_role_account() {
@@ -104,7 +114,7 @@ jobs:
           AWS_ROLE_ACCOUNT=$(get_role_account)
           echo "AWS_ROLE_ACCOUNT=$AWS_ROLE_ACCOUNT" >> $GITHUB_ENV
 
-      - name: Determine Helm Chart Version
+      - name: Set Version/GetVersion - Determine Helm Chart Version
         run: |
           get_version() {
             local helm_chart_version="$1"

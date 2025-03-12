@@ -1,0 +1,17 @@
+nginx:
+  image: nginx:latest
+  replicas: 2
+  service:
+    type: LoadBalancer
+    port: 80
+
+redis:
+  image: redis:latest
+  replicas: 1
+  service:
+    type: ClusterIP
+    port: 6379
+
+# Global settings
+serviceAccount:
+  create: true

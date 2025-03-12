@@ -13,7 +13,7 @@ on:
         type: string
       ENVIRONMENT:
         type: choice
-        description: "Short name of environment to deploy to (e.g. assembly, funct, etc.)/n - assembly: Assembly env /n - funct: Functional env /n - integ: Integration env /n - migrate: Data Migration env /n - perf: Performance env /n - lab: Lab env /n - lab-dr: lab DR"
+        description: "Short name of environment to deploy to (e.g. assembly, funct, etc.)\n - assembly: Assembly env \n - funct: Functional env \n - integ: Integration env /n - migrate: Data Migration env /n - perf: Performance env /n - lab: Lab env /n - lab-dr: lab DR"
         options:
         - assembly
         - funct
